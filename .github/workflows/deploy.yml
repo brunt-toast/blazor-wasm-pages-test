@@ -27,7 +27,7 @@ jobs:
 
       # Build the .NET project in Release mode
       - name: Build the .NET project
-        run: dotnet build --configuration Release --project src/src.csproj
+        run: dotnet build -src/src.csproj -configuration Release 
 
       # Publish the app
       - name: Publish the .NET app
