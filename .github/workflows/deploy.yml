@@ -23,7 +23,7 @@ jobs:
 
       # Restore dependencies
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore --project src/src.csproj
 
       # Build the .NET project in Release mode
       - name: Build the .NET project
