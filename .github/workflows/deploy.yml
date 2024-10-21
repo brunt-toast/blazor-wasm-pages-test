@@ -1,0 +1,45 @@
+name: Build and Deploy .NET App to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # Run on push to the main branch
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up .NET
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.x'  # Target .NET version 8.x
+
+      # Restore dependencies
+      - name: Restore dependencies
+        run: dotnet restore
+
+      # Build the .NET project in Release mode
+      - name: Build the .NET project
+        run: dotnet build --configuration Release
+
+      # Publish the app
+      - name: Publish the .NET app
+        run: dotnet publish --configuration Release --output ./output
+
+      # Upload the 'wwwroot' folder to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./output/net8.0/publish/wwwroot  # Path to the 'wwwroot' folder after publish
+          # Configure GitHub Pages to use gh-pages branch
+          publish_branch: gh-pages  # Branch for GitHub Pages
+
+
