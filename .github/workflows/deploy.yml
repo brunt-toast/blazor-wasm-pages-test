@@ -45,7 +45,10 @@ jobs:
 
       # Publish the app
       - name: Publish the .NET app
-        run: dotnet publish src/src.csproj -c Release --output ./_site
+        run: dotnet publish src/src.csproj -c Release --output ./output
+
+      - name: Copy files 
+        run: cp -r ./output/wwwroot ./_site
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
