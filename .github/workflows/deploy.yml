@@ -1,19 +1,33 @@
-name: Build and Deploy .NET App to GitHub Pages
+# Sample workflow for building and deploying a Jekyll site to GitHub Pages
+name: Deploy 
 
 on:
+  # Runs on pushes targeting the default branch
   push:
-    branches:
-      - main  # Run on push to the main branch
-      - master
+    branches: ["master"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
+  # Build job
   build:
     runs-on: ubuntu-latest
-
     steps:
-      # Checkout the code
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
       # Set up .NET
       - name: Setup .NET SDK
@@ -31,14 +45,22 @@ jobs:
 
       # Publish the app
       - name: Publish the .NET app
-        run: dotnet publish src/src.csproj -c Release --output ./output
+        run: dotnet publish src/src.csproj -c Release --output ./_site
 
-      # Upload the 'wwwroot' folder to GitHub Pages
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+
+  # Deployment job
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./output/net8.0/publish/wwwroot  # Path to the 'wwwroot' folder after publish
-          # Configure GitHub Pages to use gh-pages branch
-          publish_branch: gh-pages  # Branch for GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 
