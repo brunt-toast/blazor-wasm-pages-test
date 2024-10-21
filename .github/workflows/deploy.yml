@@ -27,11 +27,11 @@ jobs:
 
       # Build the .NET project in Release mode
       - name: Build the .NET project
-        run: dotnet build -src/src.csproj -configuration Release 
+        run: dotnet build src/src.csproj -c Release 
 
       # Publish the app
       - name: Publish the .NET app
-        run: dotnet publish --configuration Release --project src/src.csproj --output ./output
+        run: dotnet publish -c Release --project src/src.csproj --output ./output
 
       # Upload the 'wwwroot' folder to GitHub Pages
       - name: Deploy to GitHub Pages
